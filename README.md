@@ -1,6 +1,6 @@
 # ELDiR: Evolution & learning in differentiable robots
 
-Code for [Evolution and learning in differentiable robots](), Strgar et al. 
+Code for [Evolution and learning in differentiable robots](https://arxiv.org/abs/2405.14712), Strgar et al. 
 
 To appear the proceedings of [Robotics: Science and Systems 2024](https://roboticsconference.org/).
 
