@@ -2,7 +2,7 @@
 
 Code for [Evolution and learning in differentiable robots](https://arxiv.org/abs/2405.14712), Strgar et al. 
 
-To appear the proceedings of [Robotics: Science and Systems 2024](https://roboticsconference.org/).
+To appear in the proceedings of [Robotics: Science and Systems 2024](https://roboticsconference.org/).
 
 The ELDiR project website is located [here](https://sites.google.com/view/eldir)
 
