@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 50
+    n_gens = 10
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
