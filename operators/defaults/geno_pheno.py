@@ -163,7 +163,10 @@ def random_spring_geno():
     return np.random.randint(0, 2, n_springs)
 
 def random_body_geno():
-    return np.random.randint(0, 2, row * col)
+    bg = np.random.randint(0, 2, row * col)
+    bg = fill_holes(bg)
+    bg = body_largest_cc(bg)
+    return bg
 
 def sample_geno():
     return random_body_geno(), random_spring_geno()
