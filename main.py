@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     ## Declare output directory path
     ## Change this to a directory of your choice
-    output_dir = os.path.abspath("./eldir-outputs")
+    output_dir = "/home/qpd4588/ELDiR/eldir-outputs"
     os.makedirs(output_dir, exist_ok=True)
 
     ## Redirect stdout and stderr to files
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
-    use_cuda = False
+    use_cuda = True
     ## If CUDA available specify >= 1 device IDs for parallel simulation
     device_ids = [3,]
     ## If CUDA unavailable, set device IDs to None
