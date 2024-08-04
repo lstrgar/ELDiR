@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, seaborn as sns, sys
+import pickle, numpy as np, os, subprocess, seaborn as sns, sys
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import moviepy.video.io.ImageSequenceClip
@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.abspath('')))
 
 
 generation = int(generations[-1])
+outdir = "./eldir-outputs"
 
 viz_outdir = "./tmp-viz/gen-{}".format(generation)
 print("Visualization output directory: ", viz_outdir)
@@ -57,6 +58,8 @@ plt.axis('off')
 
 print(f"python visualize.py {robot_save_file} {viz_outdir}")
 
+command = ["python", "visualize.py", robot_save_file, viz_outdir]
+subprocess.run(command, capture_output=True, text=True)
 #python visualize.py ./tmp-viz/gen-40/best_robot.pkl ./tmp-viz/gen-40
 
 state_dir = os.path.join(viz_outdir, "state")
