@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, subprocess, seaborn as sns, sys
+import pickle, numpy as np, os, time, subprocess, seaborn as sns, sys
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from tqdm import tqdm
@@ -7,7 +7,9 @@ from IPython.display import Video
 sys.path.append(os.path.dirname(os.path.abspath('')))
 
 parser = ArgumentParser()
-parser.add_argument('generation', type=str)
+parser.add_argument('generation', type=int)
+args = parser.parse_args()
+generation = args.generation
 
 outdir = "./eldir-outputs"
 

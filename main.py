@@ -1,4 +1,4 @@
-import os, sys, time, shutil, numpy as np
+import os, sys, time, shutil, subprocess, numpy as np
 from operators.defaults.geno_pheno import random_geno, geno_2_pheno
 from operators.defaults.mutate import mutate
 from operators.defaults.select import select
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 10
+    n_gens = 4
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
@@ -83,6 +83,7 @@ if __name__ == '__main__':
         pop_fpath, pop_fit = select(pop_fpath, pop_fit, offspring_fpath, offspring_fit, gen_dir)
         save_fit(pop_fit, gen_dir, os.path.basename(pop_fit_fpath))
         geno_2_pheno(pop_fpath)
-    
 
-
+        ## Run visualization process
+        command = ["python", "constant-visualization.py", str(gen)]
+        subprocess.run(command, capture_output=True, text=True)
