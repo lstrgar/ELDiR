@@ -1,4 +1,5 @@
 import os, sys, time, shutil, subprocess, numpy as np
+from argparse import ArgumentParser
 from operators.defaults.geno_pheno import random_geno, geno_2_pheno
 from operators.defaults.mutate import mutate
 from operators.defaults.select import select
@@ -27,7 +28,13 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 4
+    n_gens = 50
+
+    ## Activate visualization for each generation
+    parser = ArgumentParser()
+    parser.add_argument('no_viz', type=bool, default=False)
+    args = parser.parse_args()
+    no_viz = args.no_viz
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
@@ -84,6 +91,7 @@ if __name__ == '__main__':
         save_fit(pop_fit, gen_dir, os.path.basename(pop_fit_fpath))
         geno_2_pheno(pop_fpath)
 
-        ## Run visualization process
-        command = ["python", "constant-visualization.py", str(gen)]
-        subprocess.run(command, capture_output=True, text=True)
+        if no_viz == False:
+            ## Run visualization process
+            command = ["python", "constant-visualization.py", str(gen)]
+            subprocess.run(command, capture_output=True, text=True)

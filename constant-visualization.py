@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, time, subprocess, seaborn as sns, sys
+import pickle, numpy as np, os, subprocess, seaborn as sys
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from tqdm import tqdm
@@ -13,7 +13,7 @@ generation = args.generation
 
 outdir = "./eldir-outputs"
 
-viz_outdir = "./tmp-viz/gen-{}".format(generation)
+viz_outdir = "./eldir-outputs/{}".format(generation)
 print("Visualization output directory: ", viz_outdir)
 if not os.path.exists(viz_outdir):
     os.makedirs(viz_outdir)
