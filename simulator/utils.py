@@ -1,5 +1,5 @@
-import multiprocessing as mp, numpy as np, os
-from .sim import simulate, learning_iters as iters
+import multiprocessing as mp, numpy as np, os, subprocess as sub
+from .custom_sim import iters
 from utils.disk_utils import load_pop
 
 def get_worker_indices(n_robots, n_workers):
@@ -21,6 +21,7 @@ def merge_losses(gen_dir, outfile, worker_indices, n_robots):
     for i in range(n_workers):
         start, end = worker_indices[i]
         loss_file = os.path.join(gen_dir, f'loss_{start}-{end}.npy')
+        print(f"Checking for loss file at: {loss_file}")
         assert os.path.exists(loss_file)
         losses.append(np.load(loss_file))
     losses = np.concatenate(losses)
@@ -29,7 +30,7 @@ def merge_losses(gen_dir, outfile, worker_indices, n_robots):
     assert fitness.shape[1] == iters+1
     np.save(outfile, fitness)
 
-def simulate_pop(pop_file, gen_dir, device_ids, debug):
+def simulate_pop(pop_file, gen_dir, device_ids, debug, ground_file):
     pop = load_pop(pop_file)
     n_robots = len(pop["points"])
     n_workers = 1 if device_ids is None else len(device_ids)
@@ -41,8 +42,20 @@ def simulate_pop(pop_file, gen_dir, device_ids, debug):
         device_id = None if device_ids is None else device_ids[i]
         log_file = os.path.join(gen_dir, f"worker_{device_id}.log" if device_id is not None else "worker_CPU.log")
         seed = np.random.randint(0, np.iinfo(np.int32).max)
-        args = (pop_file, gen_dir, device_id, log_file, start, end, seed, debug)
-        p = mp.Process(target=simulate, args=args)
+        command = [
+            "python", "C:/GitHub/ELDiR/simulator/custom_sim.py",
+            "--device_id", str(device_id),
+            "--outdir", str(gen_dir),
+            "--robots_file", str(pop_file),
+            "--ground_file", str(ground_file),
+            "--idx0", str(start),
+            "--idx1", str(end),
+            "--seed", str(seed),
+            "--logfile", str(log_file)
+        ]
+        if debug:  
+            command.append("--debug")
+        p = mp.Process(target=sub.run, args=(command,))
         processes.append(p)
         p.start()
         print(f"Started process idx:{i} / pid:{p.pid} / device:{device_id} / robots:{start}-{end}")

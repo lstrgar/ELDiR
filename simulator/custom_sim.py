@@ -8,6 +8,7 @@ import pickle
 import sys
 
 steps = 1000
+iters = 35
 base_ground_height = 0.1
 gravity = -7.0
 pi = math.pi
@@ -487,6 +488,7 @@ def forward():
         advance_toi(t)
     compute_loss(steps - 1)
 
+""""
 def forward_viz(gui, imgdir, viz_interval, robot_ids):
 
     print(f"Simulating {steps} steps...", flush=True)
@@ -557,6 +559,7 @@ def forward_viz(gui, imgdir, viz_interval, robot_ids):
     np.save(os.path.join(imgdir, "spring_anchor_b"), spring_anchor_b.to_numpy())
     print(loss.to_numpy())
     print(f"Imgs and loss written to {imgdir}", flush=True)
+"""
 
 def manual_backward():
     compute_loss.grad(steps - 1)
@@ -611,19 +614,23 @@ def optimize(iters, out_dir, idx0, idx1, weights_dir_name):
     loss_save_path = os.path.join(out_dir, f"loss_{idx0}-{idx1}.npy")
     np.save(loss_save_path, loss_hist)
 
-def visualize(robots_file, idx0, idx1, imgdir, viz_interval, gui):
-    robot_ids = setup(robots_file, idx0, idx1, fill_weights=True)
-    forward_viz(gui, imgdir, viz_interval, robot_ids)
+#def visualize(robots_file, idx0, idx1, imgdir, viz_interval, gui):
+    #robot_ids = setup(robots_file, idx0, idx1, fill_weights=True)
+    #forward_viz(gui, imgdir, viz_interval, robot_ids)
 
 def main(robots_file, idx0, idx1, outdir, iters, weights_dir_name):
     setup(robots_file, idx0, idx1)
     optimize(iters, outdir, idx0, idx1, weights_dir_name)
 
+def none_or_int(value):
+    if value == 'None':
+        return None
+    return int(value)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--iters', type=int, default=35)
     parser.add_argument('--debug', default=False, action='store_true')
-    parser.add_argument('--device_id', type=int, default=None)
+    parser.add_argument('--device_id', type=none_or_int, default=None)
     parser.add_argument('--outdir', type=str, required=True)
     parser.add_argument('--weights_dir_name', type=str, default="weights")
     parser.add_argument('--robots_file', type=str, required=True)
@@ -632,8 +639,8 @@ if __name__ == '__main__':
     parser.add_argument('--idx1', type=int, default=None)
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--logfile', type=str, default=None)
-    parser.add_argument('--visualize', default=False, action='store_true')
-    parser.add_argument('--viz_interval', type=int, default=5)
+    #parser.add_argument('--visualize', default=False, action='store_true')
+    #parser.add_argument('--viz_interval', type=int, default=5)
 
     options = parser.parse_args()
 
@@ -641,11 +648,11 @@ if __name__ == '__main__':
         sys.stdout = open(options.logfile, 'w')
         sys.stderr = sys.stdout
 
-    global weights_dir_name, outdir, ground_file, track_grad
+    global weights_dir_name, outdir, ground_file
     weights_dir_name = options.weights_dir_name
     outdir = options.outdir
     ground_file = options.ground_file
-    track_grad = False if options.visualize else True
+    track_grad = True
 
     if options.device_id is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = str(options.device_id)
@@ -662,16 +669,16 @@ if __name__ == '__main__':
 
     set_ti_globals()
 
-    if options.visualize:
-        os.makedirs(options.outdir, exist_ok=True)
-        print(f"Visualizing robots in {options.robots_file}...", flush=True)
-        gui = ti.GUI("Mass Spring Robot", (512, 512), background_color=0xFFFFFF, show_gui=False)
-        visualize(options.robots_file, options.idx0, options.idx1, options.outdir, options.viz_interval, gui)
-        exit()
+    #if options.visualize:
+        #os.makedirs(options.outdir, exist_ok=True)
+        #print(f"Visualizing robots in {options.robots_file}...", flush=True)
+        #gui = ti.GUI("Mass Spring Robot", (512, 512), background_color=0xFFFFFF, show_gui=False)
+        #visualize(options.robots_file, options.idx0, options.idx1, options.outdir, options.viz_interval, gui)
+        #exit()
 
     print(f"Writing losses to {options.outdir}", flush=True)
 
     print(f"Random seed: {options.seed}", flush=True)
 
-    main(options.robots_file, options.idx0, options.idx1, options.outdir, options.iters, options.weights_dir_name)
+    main(options.robots_file, options.idx0, options.idx1, options.outdir, iters, options.weights_dir_name)
 
