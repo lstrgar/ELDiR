@@ -28,15 +28,13 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 5
+    n_gens = 50
 
     ## Activate visualization for each generation
     parser = ArgumentParser()
-    parser.add_argument('--no_viz', type=bool, default=False)
+    parser.add_argument('no_viz', type=bool, default=False)
     args = parser.parse_args()
     no_viz = args.no_viz
-
-    ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
@@ -56,7 +54,7 @@ if __name__ == '__main__':
     geno_2_pheno(pop_fpath)
 
     ## Evaluate the initial population and save fitness trajectory
-    pop_fit, pop_fit_fpath = simulate_pop(pop_fpath, gen_dir, device_ids, debug, ground_file)
+    pop_fit, pop_fit_fpath = simulate_pop(pop_fpath, gen_dir, device_ids, debug)
 
     ## Copy the initial population as parents for the next generation
     ## Robots must be sorted according to their fitness
@@ -82,7 +80,7 @@ if __name__ == '__main__':
         geno_2_pheno(offspring_fpath)
 
         ## Evaluate the offspring and save fitness trajectory
-        offspring_fit, offspring_fit_fpath = simulate_pop(offspring_fpath, gen_dir, device_ids, debug, ground_file)
+        offspring_fit, offspring_fit_fpath = simulate_pop(offspring_fpath, gen_dir, device_ids, debug)
 
         ## Create the next generation directory
         gen_dir = os.path.join(output_dir, str(gen+1))
