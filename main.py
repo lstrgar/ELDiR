@@ -28,11 +28,11 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 50
+    n_gens = 5
 
     ## Activate visualization for each generation
     parser = ArgumentParser()
-    parser.add_argument('no_viz', type=bool, default=False)
+    parser.add_argument('--no_viz', type=bool, default=False)
     args = parser.parse_args()
     no_viz = args.no_viz
 

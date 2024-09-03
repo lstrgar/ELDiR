@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, subprocess, seaborn as sys
+import pickle, numpy as np, os, subprocess, seaborn as sns, sys
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from tqdm import tqdm
