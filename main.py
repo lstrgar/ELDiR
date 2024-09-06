@@ -19,8 +19,10 @@ if __name__ == '__main__':
 
     ## Redirect stdout and stderr to files
     ## Comment these lines to print to console
-    sys.stdout = open(os.path.join(output_dir, f"stdout_{time.strftime('%Y%m%d-%H%M%S')}.txt"), "w")
-    sys.stderr = open(os.path.join(output_dir, f"stderr_{time.strftime('%Y%m%d-%H%M%S')}.txt"), "w")
+    log_file = os.path.join(output_dir, f"stdout_{time.strftime('%Y%m%d-%H%M%S')}.txt")
+    err_file = os.path.join(output_dir, f"stderr_{time.strftime('%Y%m%d-%H%M%S')}.txt")
+    sys.stdout = open(log_file, "w")
+    sys.stderr = open(err_file, "w")
 
     ## Set population size
     ## Increase or decrease subject to available compute & memory
@@ -93,5 +95,5 @@ if __name__ == '__main__':
 
         if no_viz == False:
             ## Run visualization process
-            command = ["python", "constant-visualization.py", str(gen)]
+            command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file)]
             subprocess.run(command, capture_output=True, text=True)
