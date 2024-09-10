@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.abspath('')))
 
 parser = ArgumentParser()
 parser.add_argument('--generation', type=int)
-parser.add_argument('--logfile', type=str, defaul=None, help="Path to log file")
+parser.add_argument('--logfile', type=str, default=None, help="Path to log file")
 parser.add_argument('--errfile', type=str, default=None, help="Path to error file")
 args = parser.parse_args()
 generation = args.generation
@@ -22,6 +22,7 @@ if log_file is not None:
     print(f"Redirecting errors to: {err_file}", flush=True)
 
 outdir = "./eldir-outputs"
+ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
 
 viz_outdir = "./eldir-outputs/{}".format(generation)
 print("Visualization output directory: ", viz_outdir)
@@ -140,7 +141,21 @@ for t in tqdm(range(0, steps, 2)):
         plt.plot(x[t, i, 0], x[t, i, 1], 'o', color=c0, markersize=4)
         plt.plot(x[t, i, 0], x[t, i, 1], 'o', color=c1, markersize=2)
 
-    plt.hlines(0.0915, x_min, x_max, color='black')
+    if ground_file is None:
+        plt.hlines(0.0915, x_min, x_max, color='black')
+    else:
+        ground = np.load(ground_file)
+        xs, ys, lens, slopes, shifts = ground
+        n_ground_segs = len(xs)
+
+        fig = plt.figure(figsize=(20, 10))
+
+        for i in range(n_ground_segs):
+            plt.plot([xs[i], xs[i] + lens[i]], [ys[i], ys[i] + lens[i] * slopes[i]], 'b')
+
+        plt.xlim(-0.5, 2.5)
+        plt.ylim(0, 1)
+        plt.gca().set_aspect('equal', adjustable='box')
 
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')

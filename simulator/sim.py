@@ -16,7 +16,7 @@ spring_omega = 10
 damping = 15
 friction = 1.0
 n_ground_segs = 0
-ground_file = None
+ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
 
 ## Robot population parameters
 max_springs = 0
