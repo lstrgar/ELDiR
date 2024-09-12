@@ -22,7 +22,7 @@ if log_file is not None:
     print(f"Redirecting errors to: {err_file}", flush=True)
 
 outdir = "./eldir-outputs"
-ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
+ground_file = "./terrain.npy"
 
 viz_outdir = "./eldir-outputs/{}".format(generation)
 print("Visualization output directory: ", viz_outdir)
