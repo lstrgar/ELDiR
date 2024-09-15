@@ -231,12 +231,12 @@ def new_v_on_contact(seg: ti.i32, vx: ti.f64, vy: ti.f64):
     return new_v
 
 @ti.kernel
-def advance(t: ti.i32):
+def advance(tm: ti.i32):
     for r, i in ti.ndrange(n_robots, max_objects):
         if i < n_objects[r]:
             s = ti.exp(-dt * damping)
-            v_= s * v[r, t - 1, i] + dt * gravity * ti.Vector([0.0, 1.0]) + v_inc[r, t, i]
-            old_x = x[r, t - 1, i]
+            v_= s * v[r, tm - 1, i] + dt * gravity * ti.Vector([0.0, 1.0]) + v_inc[r, tm, i]
+            old_x = x[r, tm - 1, i]
             new_x = old_x + dt * v_
 
             seg_new_x = ground_seg_at(new_x[0])
@@ -265,8 +265,8 @@ def advance(t: ti.i32):
                 if new_x[1] < ground_height:
                     new_x[1] = ground_height
 
-            v[r, t, i] = v_
-            x[r, t, i] = new_x
+            v[r, tm, i] = v_
+            x[r, tm, i] = new_x
 
 ## Loss computed as negated horizontal CoM displacement
 @ti.kernel
