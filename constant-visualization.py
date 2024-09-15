@@ -148,12 +148,10 @@ for t in tqdm(range(0, steps, 2)):
         xs, ys, lens, slopes, shifts = ground
         n_ground_segs = len(xs)
 
-        fig = plt.figure(figsize=(20, 10))
-
         for i in range(n_ground_segs):
             plt.plot([xs[i], xs[i] + lens[i]], [ys[i], ys[i] + lens[i] * slopes[i]], 'b')
 
-        plt.xlim(-0.5, 2.5)
+        plt.xlim(-0.5, 2.5)             # Needs to be fixed
         plt.ylim(0, 1)
         plt.gca().set_aspect('equal', adjustable='box')
 
