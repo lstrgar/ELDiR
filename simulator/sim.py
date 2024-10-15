@@ -16,7 +16,7 @@ spring_omega = 10
 damping = 15
 friction = 1.0
 n_ground_segs = 0
-ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
+ground_samples_file = 'ground_sample_points.npy'
 
 ## Robot population parameters
 max_springs = 0
@@ -58,6 +58,8 @@ def set_ti_globals():
     center = vecf64()
     act = scalarf64()
     update_scale = scalarf64()
+    x_samples = scalarf64()
+    y_samples = scalarf64()
     ground_segs_x0 = scalarf64()
     ground_segs_y0 = scalarf64()
     ground_segs_slope = scalarf64()
@@ -159,23 +161,22 @@ def apply_spring_force(t: ti.i32):
             ti.atomic_add(v_inc[r, t + 1, a], -impulse)
             ti.atomic_add(v_inc[r, t + 1, b], impulse)
 
-def ground_height_at_(x_val, seg):
-    ground_height = base_ground_height
-    if x_val >= 0 and seg >= 0:
-        slope = ground_segs_slope[seg]
-        shift = ground_segs_shift[seg]
-        ground_height = x_val * slope + shift
+def ground_height_at_(x_val, xs, ys):
+    ground_height = np.interp(x_val, xs, ys)
+
     return ground_height
 
 @ti.func
-def ground_height_at(x_val: ti.f64, seg: ti.i32):
-    ground_height = base_ground_height
-    if x_val >= 0 and seg >= 0:
-        slope = ground_segs_slope[seg]
-        shift = ground_segs_shift[seg]
-        ground_height = x_val * slope + shift
+def ground_height_at(x_val: ti.f64, xs, ys):
+    ground_height = np.interp(x_val, xs, ys)
+
+    ground_height_ti = ti.field(dtype=ti.f64, shape=())
+    
+    ground_height_ti[None] = ground_height
+
     return ground_height
 
+"""
 def ground_seg_at_(x_val):
     seg = -1
     if x_val >= 0:
@@ -195,30 +196,34 @@ def ground_seg_at(x_val: ti.f64):
             if x_val >= ground_segs_x0[i]:
                 seg = i
     return seg
+"""
 
 @ti.func
-def distance_to_ground_at(x_val: ti.f64, y_val: ti.f64, seg: ti.i32):
-    slope = ground_segs_slope[seg]
-    shift = ground_segs_shift[seg]
-    return ti.abs(-slope * x_val + y_val - shift) / ti.sqrt(1 + slope**2)
+def distance_to_ground_at(x_val: ti.f64, y_val: ti.f64, xs, ys):
+    ground_height = ground_height_at(x_val, xs, ys)
+    
+    distance = y_val - ground_height
+    
+    return distance
 
 @ti.func
-def normal_vec(seg: ti.i32):
-    slope = ground_segs_slope[seg]
+def normal_vec(xs, ys, x_val: ti.f64()):
+    slope = (ground_height_at(x_val + 1e-6, xs, ys) - ground_height_at(x_val - 1e-6, xs, ys)) / (2 * 1e-6)
     return ti.Vector([-slope / ti.sqrt(1 + slope**2), 1 / ti.sqrt(1 + slope**2)])
 
+#Multiply dt by v and add to position to get position at dt. If below ground, multiply dt by a fraction through a for loop and that is your toi
 @ti.func
-def compute_toi(seg: ti.i32, x_val: ti.f64, y_val: ti.f64, vx: ti.f64, vy: ti.f64):
-    dist = distance_to_ground_at(x_val, y_val, seg)
-    norm_vec = normal_vec(seg)
+def compute_toi(xs, ys, x_val: ti.f64, y_val: ti.f64, vx: ti.f64, vy: ti.f64):
+    dist = distance_to_ground_at(x_val, y_val)
+    norm_vec = normal_vec(xs, ys, x_val)
     v = ti.Vector([vx, vy])
     norm_vec_mag = ti.abs(v.dot(norm_vec))
     toi = dist / (norm_vec_mag + 1e-10)
     return toi
 
 @ti.func
-def new_v_on_contact(seg: ti.i32, vx: ti.f64, vy: ti.f64):
-    norm_vec = normal_vec(seg)
+def new_v_on_contact(xs, ys, x_val: ti.f64(), vx: ti.f64, vy: ti.f64):
+    norm_vec = normal_vec(xs, ys, x_val)
     v = ti.Vector([vx, vy])
     norm_vec_scale = v.dot(norm_vec)
     norm_vec = norm_vec * norm_vec_scale
@@ -231,7 +236,7 @@ def new_v_on_contact(seg: ti.i32, vx: ti.f64, vy: ti.f64):
     return new_v
 
 @ti.kernel
-def advance(tm: ti.i32):
+def advance(tm: ti.i32, xs, ys):
     for r, i in ti.ndrange(n_robots, max_objects):
         if i < n_objects[r]:
             s = ti.exp(-dt * damping)
@@ -239,28 +244,18 @@ def advance(tm: ti.i32):
             old_x = x[r, tm - 1, i]
             new_x = old_x + dt * v_
 
-            seg_new_x = ground_seg_at(new_x[0])
-            ground_height = ground_height_at(new_x[0], seg_new_x)
+            ground_height = ground_height_at(new_x[0], xs, ys)
 
             if new_x[1] < ground_height:
-                seg_old_x = ground_seg_at(old_x[0])
-                s0 = ti.min(seg_old_x, seg_new_x)
-                s1 = ti.max(seg_old_x, seg_new_x)
-                toi = compute_toi(s0, old_x[0], old_x[1], v_[0], v_[1])
-                for j in ti.static(range(n_ground_segs)):
-                    if j > s0 and j <= s1:
-                        toi = ti.min(toi, compute_toi(j, old_x[0], old_x[1], v_[0], v_[1]))
-
+                toi = compute_toi(xs, ys, old_x[0], old_x[1], v_[0], v_[1])
                 toi = ti.min(ti.max(0, toi), dt)
                 new_x = old_x + toi * v_
-                seg_new_x = ground_seg_at(new_x[0])
-                v_ = new_v_on_contact(seg_new_x, v_[0], v_[1])
-                ground_height = ground_height_at(new_x[0], seg_new_x)
+                v_ = new_v_on_contact(xs, ys, new_x[0], v_[0], v_[1])
+                ground_height = ground_height_at(new_x[0], xs, ys)
                 
                 if toi < dt:
-                    new_x = new_x + (dt - toi) * v_
-                    seg_new_x = ground_seg_at(new_x[0])
-                    ground_height = ground_height_at(new_x[0], seg_new_x)
+                    new_x += (dt - toi) * v_
+                    ground_height = ground_height_at(new_x[0], xs, ys)
 
                 if new_x[1] < ground_height:
                     new_x[1] = ground_height
@@ -339,10 +334,10 @@ def clear():
 
 ## Load individual robot into Taichi
 @ti.kernel
-def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: ti.i32, springs: ti.types.ndarray()): # type: ignore
+def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: ti.i32, springs: ti.types.ndarray(), initial_offset: ti.f64): # type: ignore
     n_objects[id] = n_obj
     for i in range(n_obj):
-        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1]])
+        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1] + initial_offset + 0.01])
 
     n_springs[id] = n_spr
     for i in range(n_spr):
@@ -354,7 +349,7 @@ def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: t
 
 ## Load all robots into taichi 
 def setup(robots_file, idx0=None, idx1=None):
-    global n_robots, max_objects, max_springs, ground_file, n_ground_segs
+    global n_robots, max_objects, max_springs, ground_samples_file, n_ground_segs
 
     with open(robots_file, "rb") as f:
         robots = pickle.load(f)
@@ -374,48 +369,31 @@ def setup(robots_file, idx0=None, idx1=None):
     max_springs = max([len(s) for s in all_springs])
     print(f"num robots: {n_robots}, max num points: {max_objects}, max num springs: {max_springs}", flush=True)
 
-    if ground_file is None:
-        n_ground_segs = 3
+    if ground_samples_file is None:
+        x_samples = np.linspace(0, 1.25, 10)
+        y_samples = [None] * 10
+        for i in range(10):
+            y_samples[i] = 0
         print(f"Using flat terrain...", flush=True)
     else:
-        ground = np.load(ground_file)
-        xs, ys, lens, slopes, shifts = ground
-        n_ground_segs = len(xs)
-        print(f"Loading terrain from {ground_file}...", flush=True)
-    print(f"n_ground_segs: {n_ground_segs}", flush=True)
+        x_samples, y_samples = np.load(ground_samples_file, allow_pickle=True)
 
     allocate_fields()
-
-    if ground_file is None:
-        ground_segs_x0[0] = -20.0
-        ground_segs_y0[0] = base_ground_height
-        ground_segs_len[0] = 0.2
-        ground_segs_slope[0] = 0.0
-        ground_segs_shift[0] = base_ground_height
-        ground_segs_x0[1] = 0.2
-        ground_segs_y0[1] = base_ground_height
-        ground_segs_len[1] = 0.2
-        ground_segs_slope[1] = 0.5
-        ground_segs_shift[1] = 0.0
-        ground_segs_x0[2] = 0.4
-        ground_segs_y0[2] = base_ground_height + 0.5 * 0.2
-        ground_segs_len[2] = 0.6
-        ground_segs_slope[2] = -0.25
-        ground_segs_shift[2] = 0.3
-    else:
-        for i in range(n_ground_segs):
-            ground_segs_x0[i] = xs[i]
-            ground_segs_y0[i] = ys[i]
-            ground_segs_slope[i] = slopes[i]
-            ground_segs_shift[i] = shifts[i]
-            ground_segs_len[i] = lens[i]
 
     ## Set initial robot states
     for robot_id in range(0, n_robots):
         obj = np.array(all_objects[robot_id], dtype=np.float64)
         spr = np.array(all_springs[robot_id], dtype=np.float64)
         n_obj, n_spr = len(obj), len(spr)
-        setup_robot(robot_id, n_obj, obj, n_spr, spr)
+
+        i_offset = 0.0
+        if ground_samples_file is not None:
+            ## Calculate relative max of segment below robot initially and set initial offset
+            for i in range(n_obj):
+                if(ground_height_at(obj[i][0]) > i_offset):
+                    i_offset = ground_height_at(obj[i][0], x_samples, y_samples)
+
+        setup_robot(robot_id, n_obj, obj, n_spr, spr, i_offset)
     print("Robot states loaded...", flush=True)
 
     if "weights" in robots:
