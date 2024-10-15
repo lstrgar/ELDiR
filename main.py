@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     ## Number of evolution generations
     ## Increase or decrease subject to available compute & memory
-    n_gens = 5
+    n_gens = 50
 
     ## Activate visualization for each generation
     parser = ArgumentParser()

@@ -7,15 +7,15 @@ from IPython.display import Video
 sys.path.append(os.path.dirname(os.path.abspath('')))
 
 parser = ArgumentParser()
-parser.add_argument('--generation', type=int)
-parser.add_argument('--logfile', type=str, defaul=None, help="Path to log file")
+parser.add_argument('--generation', type=str)
+parser.add_argument('--logfile', type=str, default=None, help="Path to log file")
 parser.add_argument('--errfile', type=str, default=None, help="Path to error file")
 args = parser.parse_args()
 generation = args.generation
 log_file = args.logfile
 err_file = args.errfile
 
-if log_file is not None:
+if log_file is not None and err_file is not None:
     sys.stdout = open(log_file, 'a')
     sys.stderr = open(err_file, 'a')
     print(f"Redirecting output to: {log_file}", flush=True)
@@ -28,7 +28,7 @@ print("Visualization output directory: ", viz_outdir)
 if not os.path.exists(viz_outdir):
     os.makedirs(viz_outdir)
 
-with open(os.path.join(outdir, str(generation), "robots.pkl"), "rb") as f:
+with open(os.path.join(outdir, generation, "robots.pkl"), "rb") as f:
     robots = pickle.load(f)
 
 i = 0
