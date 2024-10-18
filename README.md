@@ -6,7 +6,7 @@
   <img src="./assets/1.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
-**This project was developed out of the paper [Evolution and learning in differentiable robots, Strgar et al](https://arxiv.org/abs/2405.14712). See the `2024-RSS-Strgar` [branch](https://github.com/lstrgar/ELDiR/tree/2024-RSS-Strgar) of this repository for code that reproduces experimental results from that paper.**
+**This project was developed out of the paper [Evolution and learning in differentiable robots, Strgar et al](https://www.roboticsproceedings.org/rss20/p100.html). See the `2024-RSS-Strgar` [branch](https://github.com/lstrgar/ELDiR/tree/2024-RSS-Strgar) of this repository for code that reproduces experimental results from that paper.**
 
 <p align="center">
   <img src="./assets/2.gif" alt="animated" style="width:700px; height:auto"/>
@@ -14,7 +14,7 @@
 
 ### :star: Project Site & Video: [ELDiR](https://sites.google.com/view/eldir)
 
-### :star: Paper: [Evolution and learning in differentiable robots, Strgar et al.](https://arxiv.org/abs/2405.14712)
+### :star: Paper: [Evolution and learning in differentiable robots, Strgar et al.](https://www.roboticsproceedings.org/rss20/p100.html)
 
 ### :star: Citation: If our work is useful to you please [cite our paper](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ### Quick start
 
-A simple python invocation will initiate evolution and learning according to the algorithm described in our [paper](https://arxiv.org/abs/2405.14712):
+A simple python invocation will initiate evolution and learning according to the algorithm described in our [paper](https://www.roboticsproceedings.org/rss20/p100.html):
 
 <pre lang="bash">
 python main.py
@@ -110,7 +110,7 @@ n_gens = 50
 The codebase distinguishes three evolutionary algorithmic components: [genetic representation](https://github.com/lstrgar/ELDiR/blob/main/operators/geno_pheno.py), [mutation](https://github.com/lstrgar/ELDiR/blob/main/operators/mutate.py), and [selection](https://github.com/lstrgar/ELDiR/blob/main/operators/select.py). You can easily swap-in your own algorithm by implementing a small set of functions and overriding the defaults.
 
 #### Default implementations
-By default the framework follows the evolutionary method described in our [paper](https://arxiv.org/abs/2405.14712). Briefly, we employ a direct representation of genotypes in terms of a binary grid over which random mutation occurs by flipping bits in the mask. Our selection operator chooses the top 50% of robots based on their learned ability to locomote. The code implementing the defaults is found in the `operators/defaults` [folder](https://github.com/lstrgar/ELDiR/edit/main/operators/defaults).
+By default the framework follows the evolutionary method described in our [paper](https://www.roboticsproceedings.org/rss20/p100.html). Briefly, we employ a direct representation of genotypes in terms of a binary grid over which random mutation occurs by flipping bits in the mask. Our selection operator chooses the top 50% of robots based on their learned ability to locomote. The code implementing the defaults is found in the `operators/defaults` [folder](https://github.com/lstrgar/ELDiR/edit/main/operators/defaults).
 
 #### The interface
 
@@ -247,7 +247,7 @@ title={Evolution and learning in differentiable robots},
 author={Strgar, Luke and Matthews, David and Hummer, Tyler and Kriegman, Sam},
 booktitle={Robotics: Science and Systems},
 year={2024},
-url={https://arxiv.org/abs/2405.14712}
+url={https://www.roboticsproceedings.org/rss20/p100.html}
 }
 ```
 
