@@ -34,9 +34,9 @@ if __name__ == '__main__':
 
     ## Activate visualization for each generation
     parser = ArgumentParser()
-    parser.add_argument('--no_viz', type=bool, default=False)
+    parser.add_argument('--groundfile', type=str, default=None, help='Path to custom ground file')
     args = parser.parse_args()
-    no_viz = args.no_viz
+    ground_file = args.groundfile
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     geno_2_pheno(pop_fpath)
 
     ## Evaluate the initial population and save fitness trajectory
-    pop_fit, pop_fit_fpath = simulate_pop(pop_fpath, gen_dir, device_ids, debug)
+    pop_fit, pop_fit_fpath = simulate_pop(pop_fpath, gen_dir, device_ids, ground_file, debug)
 
     ## Copy the initial population as parents for the next generation
     ## Robots must be sorted according to their fitness
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         geno_2_pheno(offspring_fpath)
 
         ## Evaluate the offspring and save fitness trajectory
-        offspring_fit, offspring_fit_fpath = simulate_pop(offspring_fpath, gen_dir, device_ids, debug)
+        offspring_fit, offspring_fit_fpath = simulate_pop(offspring_fpath, gen_dir, device_ids, ground_file, debug)
 
         ## Create the next generation directory
         gen_dir = os.path.join(output_dir, str(gen+1))
@@ -92,8 +92,3 @@ if __name__ == '__main__':
         pop_fpath, pop_fit = select(pop_fpath, pop_fit, offspring_fpath, offspring_fit, gen_dir)
         save_fit(pop_fit, gen_dir, os.path.basename(pop_fit_fpath))
         geno_2_pheno(pop_fpath)
-
-        if no_viz == False:
-            ## Run visualization process
-            command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file)]
-            subprocess.run(command, capture_output=True, text=True)

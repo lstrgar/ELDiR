@@ -16,7 +16,6 @@ spring_omega = 10
 damping = 15
 friction = 1.0
 n_ground_segs = 0
-ground_file = "C:\\GitHub\\ELDiR\\terrain.npy"
 
 ## Robot population parameters
 max_springs = 0
@@ -353,8 +352,8 @@ def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: t
         spring_actuation[id, i] = springs[i, 4]
 
 ## Load all robots into taichi 
-def setup(robots_file, idx0=None, idx1=None):
-    global n_robots, max_objects, max_springs, ground_file, n_ground_segs
+def setup(robots_file, ground_file, idx0=None, idx1=None):
+    global n_robots, max_objects, max_springs, n_ground_segs
 
     with open(robots_file, "rb") as f:
         robots = pickle.load(f)
@@ -607,7 +606,7 @@ def optimize(outdir, idx0=None, idx1=None):
     np.save(loss_save_path, loss_hist)
 
 ## End to end simulation: load robots, optimize locomotion, etc. 
-def simulate(robots_file, outdir, device_id, logfile=None, idx0=None, idx1=None, seed=0, debug=False):
+def simulate(robots_file, outdir, device_id, ground_file, logfile=None, idx0=None, idx1=None, seed=0, debug=False):
     ## Std out and std err to log file
     if logfile is not None:
         if os.path.exists(logfile):
@@ -635,7 +634,7 @@ def simulate(robots_file, outdir, device_id, logfile=None, idx0=None, idx1=None,
     print(f"Random seed: {seed}", flush=True)
 
     ## Load initial robot states into Taichi
-    setup(robots_file, idx0, idx1)
+    setup(robots_file, ground_file, idx0, idx1)
 
     ## Run optimization
     optimize(outdir, idx0, idx1)
