@@ -10,10 +10,12 @@ parser = ArgumentParser()
 parser.add_argument('--generation', type=str)
 parser.add_argument('--logfile', type=str, default=None, help="Path to log file")
 parser.add_argument('--errfile', type=str, default=None, help="Path to error file")
+parser.add_argument('--groundfile', type=str, default=None, help="Path to custom ground file")
 args = parser.parse_args()
 generation = args.generation
 log_file = args.logfile
 err_file = args.errfile
+ground_file = args.groundfile
 
 if log_file is not None and err_file is not None:
     sys.stdout = open(log_file, 'a')
@@ -140,7 +142,21 @@ for t in tqdm(range(0, steps, 2)):
         plt.plot(x[t, i, 0], x[t, i, 1], 'o', color=c0, markersize=4)
         plt.plot(x[t, i, 0], x[t, i, 1], 'o', color=c1, markersize=2)
 
-    plt.hlines(0.0915, x_min, x_max, color='black')
+    if ground_file is None:
+        plt.hlines(0.0915, x_min, x_max, color='black')
+    else:
+        ground = np.load(ground_file)
+        xs, ys, lens, slopes, shifts = ground
+        n_ground_segs = len(xs)
+
+        fig = plt.figure(figsize=(20, 10))
+
+        for i in range(n_ground_segs):
+            plt.plot([xs[i], xs[i] + lens[i]], [ys[i], ys[i] + lens[i] * slopes[i]], 'b')
+
+        plt.xlim(-0.5, 2.5)
+        plt.ylim(0, 1)
+        plt.gca().set_aspect('equal', adjustable='box')
 
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')

@@ -35,8 +35,10 @@ if __name__ == '__main__':
     ## Activate visualization for each generation
     parser = ArgumentParser()
     parser.add_argument('--no_viz', type=bool, default=False)
+    parser.add_argument('--groundfile', type=str, default=None, help='Path to custom ground file')
     args = parser.parse_args()
     no_viz = args.no_viz
+    ground_file = args.groundfile
 
     ## Specify usage of CUDA
     ## If False, the simulator will run on CPU
@@ -95,5 +97,9 @@ if __name__ == '__main__':
 
         if no_viz == False:
             ## Run visualization process
-            command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file)]
-            subprocess.run(command, capture_output=True, text=True)
+            if ground_file is not None:
+                command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file), "--groundfile", ground_file]
+                subprocess.run(command, capture_output=True, text=True)
+            else:
+                command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file)]
+                subprocess.run(command, capture_output=True, text=True)
