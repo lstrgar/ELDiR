@@ -639,7 +639,7 @@ def simulate(robots_file, outdir, device_id, ground_file, logfile=None, idx0=Non
     ## Run optimization
     optimize(outdir, idx0, idx1)
 
-def forward_visualization(robots_file, outdir):
+def forward_visualization(robots_file, outdir, ground_file):
     ## Initialize taichi runtime
     ti.init(default_fp=ti.f64, arch=ti.cpu, device_memory_fraction=0.99)
 
@@ -647,7 +647,7 @@ def forward_visualization(robots_file, outdir):
     set_ti_globals()
 
     ## Load initial robot states into Taichi
-    setup(robots_file)
+    setup(robots_file, ground_file)
 
     print(f"Running forward simulation for visualization...", flush=True)
 
