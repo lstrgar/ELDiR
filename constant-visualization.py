@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, subprocess, seaborn as sns, sys
+import pickle, numpy as np, os, subprocess, seaborn as sns, sys, shutil
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from tqdm import tqdm
@@ -74,7 +74,7 @@ plt.axis('off')
 
 print(f"python visualize.py {robot_save_file} {viz_outdir}")
 
-command = ["python", "visualize.py", robot_save_file, viz_outdir]
+command = ["python", "visualize.py", robot_save_file, viz_outdir, "--groundfile", ground_file]
 subprocess.run(command, capture_output=True, text=True)
 #python visualize.py ./tmp-viz/gen-40/best_robot.pkl ./tmp-viz/gen-40
 
@@ -120,6 +120,11 @@ offy = 0.0 + (offy - np.min(offy)) * (1.0 / (np.max(offy) - np.min(offy)))
 vx = 0.25 + (vx - np.min(vx)) * (1.0 / (np.max(vx) - np.min(vx)))
 vy = 0.25 + (vy - np.min(vy)) * (1.0 / (np.max(vy) - np.min(vy)))
 
+frame_dir = os.path.join(viz_outdir, "frames")
+if os.path.exists(frame_dir):
+    shutil.rmtree(frame_dir)
+os.makedirs(frame_dir, exist_ok=True)
+
 for t in tqdm(range(0, steps, 2)):
     fig = plt.figure(figsize=(10, 5))
 
@@ -149,8 +154,6 @@ for t in tqdm(range(0, steps, 2)):
         xs, ys, lens, slopes, shifts = ground
         n_ground_segs = len(xs)
 
-        fig = plt.figure(figsize=(20, 10))
-
         for i in range(n_ground_segs):
             plt.plot([xs[i], xs[i] + lens[i]], [ys[i], ys[i] + lens[i] * slopes[i]], 'b')
 
@@ -168,9 +171,9 @@ for t in tqdm(range(0, steps, 2)):
     plt.savefig(os.path.join(viz_outdir, "frames", f"{t}.png"))
     plt.close()
 
-frames = os.listdir(os.path.join(viz_outdir, "frames"))
+frames = os.listdir(frame_dir)
 frames.sort(key=lambda x: int(x.split('/')[-1].split('.')[0]))
-frames = [os.path.join(viz_outdir, "frames", f) for f in frames]
+frames = [os.path.join(frame_dir, f) for f in frames]
 clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(frames, fps=100)
 clip.write_videofile(os.path.join(viz_outdir, "sim.mp4"))
 
