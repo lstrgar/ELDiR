@@ -341,7 +341,7 @@ def clear():
 def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: ti.i32, springs: ti.types.ndarray()): # type: ignore
     n_objects[id] = n_obj
     for i in range(n_obj):
-        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1]])
+        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1] + 0.05])
 
     n_springs[id] = n_spr
     for i in range(n_spr):
