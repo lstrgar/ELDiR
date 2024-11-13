@@ -69,7 +69,7 @@ python main.py
 
 ### Visualize results
 
-After running the program with the defaults you can visualize your results using the `visualize-defaults.ipynb` notebook. If you discover any exciting robots please share your results! Here is a little skipper we found :) 
+Visualization of robots is handled automatically with each generation. Automated visualization can be deactivated by running main.py with the flag `--no_viz`. After running the program with the defaults without automated visualization, you can visualize your results using the `visualize-defaults.ipynb` notebook. If you discover any exciting robots please share your results! Here is a little skipper we found :) 
 
 <p align="center">
   <img src="./assets/robo.gif" alt="animated" style="width:700px; height:auto"/>
