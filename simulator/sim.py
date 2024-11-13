@@ -336,12 +336,29 @@ def clear():
     clear_loss()
     clear_grad()
 
+## Initial offsetting to make sure robot starts above ground
+@ti.kernel
+def adjust_initial_height(id: ti.i32, n_obj: ti.i32):
+    max_offset = 0.0
+
+    for i in range(n_obj):
+        x_val = x[id, 0, i][0]
+        height = x[id, 0, i][1]
+        seg = ground_seg_at(x_val)
+        ground_height = ground_height_at(x_val, seg)
+        offset = ground_height - height
+        if height < ground_height and offset > max_offset:
+            max_offset = offset
+
+    for i in range(n_obj):
+        x[id, 0, i][1] = x[id, 0, i][1] + max_offset
+
 ## Load individual robot into Taichi
 @ti.kernel
 def setup_robot(id: ti.i32, n_obj: ti.i32, objects: ti.types.ndarray(), n_spr: ti.i32, springs: ti.types.ndarray()): # type: ignore
     n_objects[id] = n_obj
     for i in range(n_obj):
-        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1] + 0.05])
+        x[id, 0, i] = ti.Vector([objects[i, 0], objects[i, 1]])
 
     n_springs[id] = n_spr
     for i in range(n_spr):
@@ -416,6 +433,11 @@ def setup(robots_file, ground_file, idx0=None, idx1=None):
         n_obj, n_spr = len(obj), len(spr)
         setup_robot(robot_id, n_obj, obj, n_spr, spr)
     print("Robot states loaded...", flush=True)
+
+    for robot_id in range(0, n_robots):
+        obj = np.array(all_objects[robot_id], dtype=np.float64)
+        n_obj = len(obj)
+        adjust_initial_height(robot_id, n_obj)
 
     if "weights" in robots:
         ## Load provided weights for visualization
