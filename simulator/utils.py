@@ -29,7 +29,7 @@ def merge_losses(gen_dir, outfile, worker_indices, n_robots):
     assert fitness.shape[1] == iters+1
     np.save(outfile, fitness)
 
-def simulate_pop(pop_file, gen_dir, device_ids, debug):
+def simulate_pop(pop_file, gen_dir, device_ids, ground_file, debug):
     pop = load_pop(pop_file)
     n_robots = len(pop["points"])
     n_workers = 1 if device_ids is None else len(device_ids)
@@ -41,7 +41,7 @@ def simulate_pop(pop_file, gen_dir, device_ids, debug):
         device_id = None if device_ids is None else device_ids[i]
         log_file = os.path.join(gen_dir, f"worker_{device_id}.log" if device_id is not None else "worker_CPU.log")
         seed = np.random.randint(0, np.iinfo(np.int32).max)
-        args = (pop_file, gen_dir, device_id, log_file, start, end, seed, debug)
+        args = (pop_file, gen_dir, device_id, ground_file, log_file, start, end, seed, debug)
         p = mp.Process(target=simulate, args=args)
         processes.append(p)
         p.start()

@@ -75,6 +75,18 @@ After running the program with the defaults you can visualize your results using
   <img src="./assets/robo.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
+### Custom uneven terrain
+
+Terrain is represented by piecewise linear functions, and the program supports uneven terrain files. To enter a terrain file, simply run `main.py` with the argument flag `--groundfile` and paste in the path of your ground file. Running the program without a ground file will simulate with flat terrain. The `floor.ipynb` notebook has functions that can randomly generate viable ground files as well (parameters are suggested but can be edited to whatever the simulation might need). Ground files must be composed of five float lists:
+
+beg_x:  starting x_coordinate of each line segment
+beg_y:  starting y_coordinate of each line sgement
+lens:   length of each line segment
+slopes: slope of each line segment
+shifts: y_intercept of each line segment
+
+where `i` in all lists represents a consecutive line segment. All lists must contain the same number of objects.
+
 ###  Accelerating experiments with CUDA
 
 This framework can be used **with or without** a [CUDA-enabled](https://developer.nvidia.com/about-cuda) GPU:
