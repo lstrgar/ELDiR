@@ -13,12 +13,6 @@ args = parser.parse_args()
 generation = args.generation
 ground_file = args.groundfile
 
-if log_file is not None and err_file is not None:
-    sys.stdout = open(log_file, 'a')
-    sys.stderr = open(err_file, 'a')
-    print(f"Redirecting output to: {log_file}", flush=True)
-    print(f"Redirecting errors to: {err_file}", flush=True)
-
 outdir = "./eldir-outputs"
 
 viz_outdir = "./eldir-outputs/{}".format(generation)
