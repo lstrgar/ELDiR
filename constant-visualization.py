@@ -1,4 +1,4 @@
-import pickle, numpy as np, os, subprocess, seaborn as sns, sys, shutil
+import pickle, time, numpy as np, os, subprocess, seaborn as sns, sys, shutil
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from tqdm import tqdm
@@ -8,20 +8,10 @@ sys.path.append(os.path.dirname(os.path.abspath('')))
 
 parser = ArgumentParser()
 parser.add_argument('--generation', type=str)
-parser.add_argument('--logfile', type=str, default=None, help="Path to log file")
-parser.add_argument('--errfile', type=str, default=None, help="Path to error file")
 parser.add_argument('--groundfile', type=str, default=None, help="Path to custom ground file")
 args = parser.parse_args()
 generation = args.generation
-log_file = args.logfile
-err_file = args.errfile
 ground_file = args.groundfile
-
-if log_file is not None and err_file is not None:
-    sys.stdout = open(log_file, 'a')
-    sys.stderr = open(err_file, 'a')
-    print(f"Redirecting output to: {log_file}", flush=True)
-    print(f"Redirecting errors to: {err_file}", flush=True)
 
 outdir = "./eldir-outputs"
 
@@ -29,6 +19,11 @@ viz_outdir = "./eldir-outputs/{}".format(generation)
 print("Visualization output directory: ", viz_outdir)
 if not os.path.exists(viz_outdir):
     os.makedirs(viz_outdir)
+
+log_file = os.path.join(viz_outdir, f"stdout_{time.strftime('%Y%m%d-%H%M%S')}.txt")
+err_file = os.path.join(viz_outdir, f"stderr_{time.strftime('%Y%m%d-%H%M%S')}.txt")
+sys.stdout = open(log_file, "w")
+sys.stderr = open(err_file, "w")
 
 with open(os.path.join(outdir, generation, "robots.pkl"), "rb") as f:
     robots = pickle.load(f)
