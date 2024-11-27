@@ -411,13 +411,13 @@ def setup(robots_file, ground_file, idx0=None, idx1=None):
         ground_segs_x0[1] = 0.2
         ground_segs_y0[1] = base_ground_height
         ground_segs_len[1] = 0.2
-        ground_segs_slope[1] = 0.5
-        ground_segs_shift[1] = 0.0
+        ground_segs_slope[1] = 0.0
+        ground_segs_shift[1] = base_ground_height
         ground_segs_x0[2] = 0.4
-        ground_segs_y0[2] = base_ground_height + 0.5 * 0.2
+        ground_segs_y0[2] = base_ground_height
         ground_segs_len[2] = 0.6
-        ground_segs_slope[2] = -0.25
-        ground_segs_shift[2] = 0.3
+        ground_segs_slope[2] = 0.0
+        ground_segs_shift[2] = base_ground_height
     else:
         for i in range(n_ground_segs):
             ground_segs_x0[i] = xs[i]
