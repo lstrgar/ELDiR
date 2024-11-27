@@ -12,7 +12,6 @@ parser.add_argument('--groundfile', type=str, default=None, help="Path to custom
 args = parser.parse_args()
 generation = args.generation
 ground_file = args.groundfile
-
 outdir = "./eldir-outputs"
 
 viz_outdir = "./eldir-outputs/{}".format(generation)
