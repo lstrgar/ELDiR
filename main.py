@@ -98,8 +98,8 @@ if __name__ == '__main__':
         if no_viz == False:
             ## Run visualization process
             if ground_file is not None:
-                command = ["python", "visualize.py", "--generation", str(gen), "--groundfile", ground_file]
+                command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file), "--groundfile", ground_file]
                 subprocess.run(command, capture_output=True, text=True)
             else:
-                command = ["python", "visualize.py", "--generation", str(gen)]
+                command = ["python", "constant-visualization.py", "--generation", str(gen), "--logfile", str(log_file), "--errfile", str(err_file)]
                 subprocess.run(command, capture_output=True, text=True)
