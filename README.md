@@ -27,8 +27,6 @@
   <img src="./assets/3.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
-### :dragon: :dragon: This repository is under active development
-
 ## Table of contents
 
 [Installation](https://github.com/lstrgar/ELDiR/blob/main/README.md#installation)
