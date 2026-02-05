@@ -2,6 +2,8 @@
 
 **Code up your favorite evolutionary algorithm and leverage the power of CUDA-accelerated differentiable simulation for fast policy learning and fitness evaluation in complex robots.**
 
+### :star: [Project Site & Video](https://lukestrgar.com/evo-learn)   :star: [Paper](https://www.roboticsproceedings.org/rss20/p100.html)     :star: [Citation](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
+
 <p align="center">
   <img src="./assets/1.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
@@ -12,16 +14,11 @@
   <img src="./assets/2.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
-### :star: Project Site & Video: [ELDiR](https://lukestrgar.com/evo-learn)
+### :star: [Project Site & Video](https://lukestrgar.com/evo-learn)
 
-### :star: Paper: [Evolution and learning in differentiable robots, Strgar et al.](https://www.roboticsproceedings.org/rss20/p100.html)
+### :star: [Paper](https://www.roboticsproceedings.org/rss20/p100.html)
 
-### :star: Citation: If our work is useful to you please [cite our paper](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
-
-### :star: Appearing in: 
-- #### *[Proceedings of Robotics: Science and Systems 2024](https://roboticsconference.org/)*
-- #### *[Virtual Creatures Competition 2024](https://sites.google.com/view/vcc-2024)*
-- #### *[Conference on Artificial Life (Late Breaking Abstract)](https://2024.alife.org/)*
+### :star: [Citation](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
 
 <p align="center">
   <img src="./assets/0.gif" alt="animated" style="width:700px; height:auto"/>
