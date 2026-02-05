@@ -24,7 +24,7 @@
 - #### *[Conference on Artificial Life (Late Breaking Abstract)](https://2024.alife.org/)*
 
 <p align="center">
-  <img src="./assets/3.gif" alt="animated" style="width:700px; height:auto"/>
+  <img src="./assets/0.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
 ## Table of contents
