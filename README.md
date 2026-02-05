@@ -12,7 +12,7 @@
   <img src="./assets/2.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
-### :star: Project Site & Video: [ELDiR](https://sites.google.com/view/eldir)
+### :star: Project Site & Video: [ELDiR](https://lukestrgar.com/evo-learn)
 
 ### :star: Paper: [Evolution and learning in differentiable robots, Strgar et al.](https://www.roboticsproceedings.org/rss20/p100.html)
 
