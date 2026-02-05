@@ -260,15 +260,3 @@ year={2024},
 url={https://www.roboticsproceedings.org/rss20/p100.html}
 }
 ```
-
-##
-
-<p align="center">
-  <img src="./assets/4.gif" alt="animated" style="width:700px; height:auto"/>
-</p>
-<p align="center">
-  <img src="./assets/5.gif" alt="animated" style="width:700px; height:auto"/>
-</p>
-<p align="center">
-  <img src="./assets/6.gif" alt="animated" style="width:700px; height:auto"/>
-</p>
