@@ -14,12 +14,6 @@
   <img src="./assets/2.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
 
-### :star: [Project Site & Video](https://lukestrgar.com/evo-learn)
-
-### :star: [Paper](https://www.roboticsproceedings.org/rss20/p100.html)
-
-### :star: [Citation](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
-
 <p align="center">
   <img src="./assets/0.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
