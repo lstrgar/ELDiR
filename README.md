@@ -2,13 +2,13 @@
 
 **Code up your favorite evolutionary algorithm and leverage the power of CUDA-accelerated differentiable simulation for fast policy learning and fitness evaluation in complex robots.**
 
+**This project was developed out of the paper [Evolution and learning in differentiable robots, Strgar et al](https://www.roboticsproceedings.org/rss20/p100.html). See the `2024-RSS-Strgar` [branch](https://github.com/lstrgar/ELDiR/tree/2024-RSS-Strgar) of this repository for code that reproduces experimental results from that paper.**
+
 ### :star: [Project Site & Video](https://lukestrgar.com/evo-learn)   :star: [Paper](https://www.roboticsproceedings.org/rss20/p100.html)     :star: [Citation](https://github.com/lstrgar/ELDiR/blob/main/README.md#citation)
 
 <p align="center">
   <img src="./assets/1.gif" alt="animated" style="width:700px; height:auto"/>
 </p>
-
-**This project was developed out of the paper [Evolution and learning in differentiable robots, Strgar et al](https://www.roboticsproceedings.org/rss20/p100.html). See the `2024-RSS-Strgar` [branch](https://github.com/lstrgar/ELDiR/tree/2024-RSS-Strgar) of this repository for code that reproduces experimental results from that paper.**
 
 <p align="center">
   <img src="./assets/2.gif" alt="animated" style="width:700px; height:auto"/>
